@@ -1,3 +1,5 @@
+[![Go](https://github.com/mikemackintosh/go-spf/actions/workflows/go.yml/badge.svg?branch=main)](https://github.com/mikemackintosh/go-spf/actions/workflows/go.yml) [![ReportCard](https://goreportcard.com/badge/github.com/mikemackintosh/go-spf)](https://goreportcard.com/badge/github.com/mikemackintosh/go-spf)
+
 go-spf
 ======
 
