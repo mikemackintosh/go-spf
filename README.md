@@ -10,6 +10,20 @@ Provide a library that allows a developer to validate an SPF record.
 ### Building
 `make` will build the binary and output a local-arch compatible binary to `./bin/`.
 
+### CLI
+Once built, you can run commands like:
+
+```zsh
+spf <domain> <ip>
+```
+
+For example:
+
+```zsh
+./bin/spf angrystatic.com 10.1.1.1
+softfail: 10.1.1.1 is not a permitted sender for angrystatic.com
+```
+
 ### Library
 
 ```go
