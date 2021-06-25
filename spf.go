@@ -26,6 +26,8 @@ var (
 	}
 )
 
+// SpfRecord is an object containing the SPF record and its associated
+// information like domain, policy, version, etc.
 type SpfRecord struct {
 	Version   string
 	Domain    string
@@ -36,7 +38,7 @@ type SpfRecord struct {
 	Errors    []error
 }
 
-// SpfEntry
+// SpfEntry is a IP network based collection of subnets, IPv4, and IPv6.
 type SpfEntry struct {
 	Entry   string
 	Network []net.IPNet
@@ -48,6 +50,9 @@ func (s *SpfRecord) Include(inc *SpfRecord) {
 	s.Includes = append(s.Includes, inc)
 }
 
+// Validate will loop through all allowed network blocks and match on the provided IP.
+// It will return pass, fail, softfail, neutral in the first argument
+// Second argument returns true or false if there is a match.
 func (s *SpfRecord) Validate(ip string) (string, bool) {
 	for _, a := range s.Allowlist {
 		for _, subnet := range a.Network {
@@ -90,6 +95,7 @@ func SetResolver(listener string) error {
 	return nil
 }
 
+// Get takes a domain and returns an evaluated SpfRecord and Error.
 func Get(domain string) (*SpfRecord, error) {
 	var err error
 
@@ -105,6 +111,8 @@ func Get(domain string) (*SpfRecord, error) {
 	return spf, nil
 }
 
+// AggregateAllowlist will loop through all the SpfIncludes recursively and
+// add all the allowed networks to the Allowlist field.
 func AggregateAllowlist(spf *SpfRecord) []*SpfEntry {
 	var ret = []*SpfEntry{}
 
@@ -162,6 +170,10 @@ func GetSpfEntry(domain string) (*SpfRecord, error) {
 	return spf, nil
 }
 
+// ParseSPF is the meat and potatoes as it evaluates the returned SPF record.
+// It will recursively evaluate include: statements.
+//
+// @TODO: Add support for exists and +/? predicates.
 func ParseSPF(spf *SpfRecord) (*SpfRecord, error) {
 	// fmt.Printf("=> Looking into %s (%s)\n", spf.Domain, spf.Record)
 	// Split the record so we can expand hsots
@@ -310,6 +322,7 @@ func ResolveA(host string) ([]net.IP, error) {
 	return ips, nil
 }
 
+// ResolveMXToIPs will resolve MX records to hostnames, and in turn to IP's.
 func ResolveMXToIPs(host string) ([]net.IP, error) {
 	mx, err := resolver.LookupMX(context.Background(), host)
 	var ips = []net.IP{}
